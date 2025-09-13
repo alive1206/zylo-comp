@@ -21,9 +21,9 @@ export const IconGift: React.FC<Props> = ({
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      stroke-width={strokeWidth}
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className={className}
     >
       <rect x="3" y="8" width="18" height="4" rx="1" />

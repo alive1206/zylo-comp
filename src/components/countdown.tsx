@@ -7,6 +7,7 @@ type Props = {
   startTime?: string;
   endTime?: string;
   countdownFormat?: "dd:hh:mm:ss" | "hh:mm:ss" | "hh:mm" | "mm:ss";
+  isShowCountdown?: boolean;
 };
 
 type TimeLeft = {
@@ -22,6 +23,7 @@ export const Countdown: React.FC<Props> = ({
   startTime,
   endTime,
   countdownFormat = "dd:hh:mm:ss",
+  isShowCountdown = true,
 }) => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
   const [isExpired, setIsExpired] = useState(false);
@@ -65,7 +67,8 @@ export const Countdown: React.FC<Props> = ({
   if (
     !timeLeft ||
     isExpired ||
-    dayjs(`${startDate} ${startTime}`).isAfter(dayjs())
+    dayjs(`${startDate} ${startTime}`).isAfter(dayjs()) ||
+    !isShowCountdown
   )
     return null;
 
@@ -76,22 +79,20 @@ export const Countdown: React.FC<Props> = ({
       const totalHours = days * 24 + hours;
       return (
         <div className="tw:flex tw:flex-col tw:items-center">
-          <p>Hurry! Offer ends in</p>
+          <p className="tw:font-bold">Hurry! Offer ends in</p>
           <div className="tw:flex">
             <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl tw:font-bold">
-                {formatTime(totalHours)}
-              </p>
+              <p className="tw:text-2xl ">{formatTime(totalHours)}</p>
               <p className="tw:text-xs">HRS</p>
             </div>
             <div className="tw:mx-2 tw:text-2xl">:</div>
             <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl tw:font-bold">{formatTime(minutes)}</p>
+              <p className="tw:text-2xl ">{formatTime(minutes)}</p>
               <p className="tw:text-xs">MINS</p>
             </div>
             <div className="tw:mx-2 tw:text-2xl">:</div>
             <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl tw:font-bold">{formatTime(seconds)}</p>
+              <p className="tw:text-2xl ">{formatTime(seconds)}</p>
               <p className="tw:text-xs">SECS</p>
             </div>
           </div>
@@ -101,17 +102,15 @@ export const Countdown: React.FC<Props> = ({
       const totalHoursOnly = days * 24 + hours;
       return (
         <div className="tw:flex tw:flex-col tw:items-center">
-          <p>Hurry! Offer ends in</p>
+          <p className="tw:font-bold">Hurry! Offer ends in</p>
           <div className="tw:flex">
             <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl tw:font-bold">
-                {formatTime(totalHoursOnly)}
-              </p>
+              <p className="tw:text-2xl ">{formatTime(totalHoursOnly)}</p>
               <p className="tw:text-xs">HRS</p>
             </div>
             <div className="tw:mx-2 tw:text-2xl">:</div>
             <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl tw:font-bold">{formatTime(minutes)}</p>
+              <p className="tw:text-2xl">{formatTime(minutes)}</p>
               <p className="tw:text-xs">MINS</p>
             </div>
           </div>
@@ -121,17 +120,15 @@ export const Countdown: React.FC<Props> = ({
       const totalMinutes = days * 24 * 60 + hours * 60 + minutes;
       return (
         <div className="tw:flex tw:flex-col tw:items-center">
-          <p>Hurry! Offer ends in</p>
+          <p className="tw:font-bold">Hurry! Offer ends in</p>
           <div className="tw:flex">
             <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl tw:font-bold">
-                {formatTime(totalMinutes)}
-              </p>
+              <p className="tw:text-2xl ">{formatTime(totalMinutes)}</p>
               <p className="tw:text-xs">MINS</p>
             </div>
             <div className="tw:mx-2 tw:text-2xl">:</div>
             <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl tw:font-bold">{formatTime(seconds)}</p>
+              <p className="tw:text-2xl ">{formatTime(seconds)}</p>
               <p className="tw:text-xs">SECS</p>
             </div>
           </div>
@@ -140,25 +137,25 @@ export const Countdown: React.FC<Props> = ({
     default: // "dd:hh:mm:ss"
       return (
         <div className="tw:flex tw:flex-col tw:items-center">
-          <p>Hurry! Offer ends in</p>
+          <p className="tw:font-bold">Hurry! Offer ends in</p>
           <div className="tw:flex">
             <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl tw:font-bold">{formatTime(days)}</p>
+              <p className="tw:text-2xl ">{formatTime(days)}</p>
               <p className="tw:text-xs">DAYS</p>
             </div>
             <div className="tw:mx-2 tw:text-2xl">:</div>
             <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl tw:font-bold">{formatTime(hours)}</p>
+              <p className="tw:text-2xl ">{formatTime(hours)}</p>
               <p className="tw:text-xs">HRS</p>
             </div>
             <div className="tw:mx-2 tw:text-2xl">:</div>
             <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl tw:font-bold">{formatTime(minutes)}</p>
+              <p className="tw:text-2xl ">{formatTime(minutes)}</p>
               <p className="tw:text-xs">MINS</p>
             </div>
             <div className="tw:mx-2 tw:text-2xl">:</div>
             <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl tw:font-bold">{formatTime(seconds)}</p>
+              <p className="tw:text-2xl ">{formatTime(seconds)}</p>
               <p className="tw:text-xs">SECS</p>
             </div>
           </div>

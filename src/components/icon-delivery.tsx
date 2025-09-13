@@ -21,9 +21,9 @@ export const IconDelivery: React.FC<Props> = ({
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      stroke-width={strokeWidth}
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className={className}
     >
       <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
