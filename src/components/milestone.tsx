@@ -106,13 +106,15 @@ export const Milestone: React.FC<Props> = ({
             const isReached = currentAmount >= milestone?.spendGoal;
 
             return (
-              <div key={milestone?.id}>
+              <div className="tw:group" key={milestone?.id}>
                 <div
-                  className="tw:absolute tw:-top-8 tw:left-0 tw:-translate-x-1/2 tw:text-sm"
+                  className={`tw:absolute tw:-top-8 tw:left-0 tw:-translate-x-1/2 tw:text-sm tw:group-hover:block ${
+                    milestone?.id === isNextMilestone?.id
+                      ? "tw:block"
+                      : "tw:hidden"
+                  }`}
                   style={{
                     left: `${leftPercentage}%`,
-                    display:
-                      milestone?.id === isNextMilestone?.id ? "block" : "none",
                   }}
                 >
                   <div className="tw:flex tw:items-center tw:text-sm">
@@ -140,11 +142,13 @@ export const Milestone: React.FC<Props> = ({
                   )}
                 </div>
                 <div
-                  className="tw:absolute tw:top-8 tw:left-0 tw:-translate-x-1/2 tw:text-sm"
+                  className={`tw:absolute tw:top-8 tw:left-0 tw:-translate-x-1/2 tw:text-sm tw:group-hover:block ${
+                    milestone?.id === isNextMilestone?.id
+                      ? "tw:block"
+                      : "tw:hidden"
+                  }`}
                   style={{
                     left: `${leftPercentage}%`,
-                    display:
-                      milestone?.id === isNextMilestone?.id ? "block" : "none",
                   }}
                 >
                   {milestone?.type === "gift"
