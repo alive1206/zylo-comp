@@ -6,6 +6,7 @@ import { IconGift } from "./icon-gift";
 import { IconTag } from "./icon-tag";
 import { Countdown } from "./countdown";
 import { filter, includes, map } from "es-toolkit/compat";
+import { RainbowButton } from "./ui/rainbow-button";
 
 type Props = {
   currency?: string;
@@ -42,7 +43,7 @@ const mockMilestone = [
 export const Milestone: React.FC<Props> = ({
   currency = "EUR",
   startDate = "2025-09-13",
-  endDate = "2025-09-14",
+  endDate = "2025-09-20",
   startTime = "15:00",
   endTime = "18:00",
   countdownFormat = "dd:hh:mm:ss",
@@ -50,6 +51,11 @@ export const Milestone: React.FC<Props> = ({
 }) => {
   const [currentAmount, setCurrentAmount] = useState(0);
   const [selectedMilestone, setSelectedMilestone] = useState<String[]>([]);
+  const [isTestingMode, setIsTestingMode] = useState(false);
+  const [testStartDate, setTestStartDate] = useState(startDate);
+  const [testEndDate, setTestEndDate] = useState(endDate);
+  const [testStartTime, setTestStartTime] = useState(startTime);
+  const [testEndTime, setTestEndTime] = useState(endTime);
 
   const isNextMilestone = useMemo(() => {
     return filter(mockMilestone, (m) => currentAmount < m.spendGoal)[0];
@@ -68,19 +74,19 @@ export const Milestone: React.FC<Props> = ({
   };
 
   return (
-    <div className="tw:flex tw:flex-col tw:p-16 tw:items-center tw:w-full ">
-      <div className="tw:flex tw:flex-col tw:p-16 tw:items-center tw:w-full tw:gap-4">
+    <div className="flex flex-col p-16 items-center w-full ">
+      <div className="flex flex-col p-16 items-center w-full gap-4">
         <Countdown
-          startDate={startDate}
-          endDate={endDate}
-          startTime={startTime}
-          endTime={endTime}
+          startDate={isTestingMode ? testStartDate : startDate}
+          endDate={isTestingMode ? testEndDate : endDate}
+          startTime={isTestingMode ? testStartTime : startTime}
+          endTime={isTestingMode ? testEndTime : endTime}
           countdownFormat={
             countdownFormat as "dd:hh:mm:ss" | "hh:mm:ss" | "hh:mm" | "mm:ss"
           }
           isShowCountdown={isShowCountdown}
         />
-        <div className="tw:text-base tw:font-bold">
+        <div className="text-base font-bold">
           {isNextMilestone
             ? `You are ${(isNextMilestone?.spendGoal - currentAmount).toFixed(
                 2
@@ -94,11 +100,12 @@ export const Milestone: React.FC<Props> = ({
             : "Congratulations! You've achieved all milestones"}
         </div>
 
-        <div className="tw:w-full tw:h-3 tw:rounded-full tw:relative tw:bg-[#ECECEC]">
+        <div className="w-full h-3 rounded-full relative bg-[#ECECEC]">
           <div
-            className="tw:h-full tw:bg-[#1e40af] tw:rounded-full tw:transition-all tw:duration-300"
+            className="h-full bg-[#1e40af] rounded-full transition-all duration-300"
             style={{
               width: `${(currentAmount / maxSpendGoal) * 100}%`,
+              transition: "width 0.3s ease-in-out",
             }}
           />
           {map(mockMilestone, (milestone) => {
@@ -106,35 +113,36 @@ export const Milestone: React.FC<Props> = ({
             const isReached = currentAmount >= milestone?.spendGoal;
 
             return (
-              <div className="tw:group" key={milestone?.id}>
+              <div className="group" key={milestone?.id}>
                 <div
-                  className={`tw:absolute tw:-top-8 tw:left-0 tw:-translate-x-1/2 tw:text-sm tw:group-hover:block ${
-                    milestone?.id === isNextMilestone?.id
-                      ? "tw:block"
-                      : "tw:hidden"
+                  className={`absolute -top-8 left-0 -translate-x-1/2 text-sm group-hover:block ${
+                    milestone?.id === isNextMilestone?.id ? "block" : "hidden"
                   }`}
                   style={{
                     left: `${leftPercentage}%`,
                   }}
                 >
-                  <div className="tw:flex tw:items-center tw:text-sm">
+                  <div className="flex items-center text-sm">
                     <span>{milestone?.spendGoal.toFixed(2)}</span>
                     <span>{currency}</span>
                   </div>
                 </div>
                 <div
-                  className="tw:rounded-full tw:h-10 tw:w-10 tw:absolute tw:top-1/2 tw:-translate-y-1/2 tw:-translate-x-1/2 tw:z-10 tw:flex tw:items-center tw:justify-center"
+                  className="rounded-full h-10 w-10 absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 flex items-center justify-center"
                   style={{
                     left: `${leftPercentage}%`,
                     backgroundColor: isReached ? "#1e40af" : "#FFFFFF",
                     border: isReached ? "none" : "1px solid #C6C6C6",
+                    animation: isReached
+                      ? "scaleAnimation .3s ease-in-out"
+                      : "",
                   }}
                 >
                   {milestone?.type === "gift" ? (
                     <IconGift color={isReached ? "#FFFFFF" : "#9F9F9F"} />
                   ) : milestone?.type === "tag" ? (
                     <IconTag
-                      className="tw:rotate-90"
+                      className="rotate-90"
                       color={isReached ? "#FFFFFF" : "#9F9F9F"}
                     />
                   ) : (
@@ -142,10 +150,8 @@ export const Milestone: React.FC<Props> = ({
                   )}
                 </div>
                 <div
-                  className={`tw:absolute tw:top-8 tw:left-0 tw:-translate-x-1/2 tw:text-sm tw:group-hover:block ${
-                    milestone?.id === isNextMilestone?.id
-                      ? "tw:block"
-                      : "tw:hidden"
+                  className={`absolute top-8 left-0 -translate-x-1/2 text-sm group-hover:block ${
+                    milestone?.id === isNextMilestone?.id ? "block" : "hidden"
                   }`}
                   style={{
                     left: `${leftPercentage}%`,
@@ -162,7 +168,7 @@ export const Milestone: React.FC<Props> = ({
           })}
         </div>
 
-        <div className="tw:flex tw:flex-col tw:gap-2 tw:mt-16">
+        <div className="flex flex-col gap-2 mt-16">
           {map(isMilestoneReached, (milestone) => {
             return (
               <div
@@ -172,9 +178,9 @@ export const Milestone: React.FC<Props> = ({
                   paddingTop: "8px",
                 }}
               >
-                <div className="tw:flex tw:justify-between tw:gap-16 tw:items-center">
-                  <div className="tw:flex tw:flex-col tw:gap-1">
-                    <div className="tw:font-bold">
+                <div className="flex justify-between gap-16 items-center">
+                  <div className="flex flex-col gap-1">
+                    <div className="font-bold">
                       {milestone?.type === "gift"
                         ? "Free gift"
                         : milestone?.type === "tag"
@@ -183,8 +189,8 @@ export const Milestone: React.FC<Props> = ({
                     </div>
                     <div>Congratulations! You have unlocked a reward!</div>
                   </div>
-                  <button
-                    className="tw:cursor-pointer tw:text-white tw:rounded-sm tw:p-[7px] tw:w-[40%] tw:text-sm"
+                  <RainbowButton
+                    className="cursor-pointer text-white rounded-sm p-[7px] w-[40%] text-sm"
                     onClick={() => {
                       setSelectedMilestone([
                         ...selectedMilestone,
@@ -207,31 +213,107 @@ export const Milestone: React.FC<Props> = ({
                       : milestone?.type === "gift"
                       ? "Selected gifts"
                       : "Applied code"}
-                  </button>
+                  </RainbowButton>
                 </div>
               </div>
             );
           })}
         </div>
       </div>
-      <div className="tw:flex tw:flex-col tw:gap-2 tw:w-full tw:relative">
+      <div className="flex flex-col gap-2 w-full relative">
         <div>Cart total</div>
-        <div className="tw:w-full tw:flex tw:gap-1 tw:items-center">
+        <div className="w-full flex gap-1 items-center">
           <input
             type="range"
-            className="tw:w-full"
+            className="w-full"
             min="0"
             max={maxSpendGoal}
             step="0.01"
             value={currentAmount}
             onChange={handleRangeChange}
           />
-          <div className="tw:flex tw:items-center tw:gap-1 tw:text-sm">
+          <div className="flex items-center gap-1 text-sm">
             <span>{currentAmount.toFixed(2)}</span>
             <span>{currency}</span>
           </div>
         </div>
         <div>Slide this to see changes in preview</div>
+      </div>
+
+      {/* Testing Controls */}
+      <div className="flex flex-col gap-4 w-full mt-8 p-4 border border-gray-300 rounded-lg bg-gray-50">
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="testing-mode"
+            checked={isTestingMode}
+            onChange={(e) => setIsTestingMode(e.target.checked)}
+            className="w-4 h-4"
+          />
+          <label htmlFor="testing-mode" className="font-bold text-gray-700">
+            Testing Mode - Override Dates
+          </label>
+        </div>
+
+        {isTestingMode && (
+          <div className="flex flex-col gap-4">
+            {/* Manual Date/Time Inputs */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  value={testStartDate}
+                  onChange={(e) => setTestStartDate(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Start Time
+                </label>
+                <input
+                  type="time"
+                  value={testStartTime}
+                  onChange={(e) => setTestStartTime(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-gray-700">
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  value={testEndDate}
+                  onChange={(e) => setTestEndDate(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-gray-700">
+                  End Time
+                </label>
+                <input
+                  type="time"
+                  value={testEndTime}
+                  onChange={(e) => setTestEndTime(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="text-xs text-gray-500">
+          Use testing mode to override the default start/end dates and times for
+          testing the countdown functionality.
+        </div>
       </div>
     </div>
   );

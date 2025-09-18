@@ -26,7 +26,6 @@ export const Countdown: React.FC<Props> = ({
   isShowCountdown = true,
 }) => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
-  const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
     if (!endDate || !endTime) return;
@@ -38,7 +37,6 @@ export const Countdown: React.FC<Props> = ({
       const difference = targetDateTime.diff(now);
 
       if (difference <= 0) {
-        setIsExpired(true);
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         return;
       }
@@ -66,34 +64,49 @@ export const Countdown: React.FC<Props> = ({
 
   if (
     !timeLeft ||
-    isExpired ||
     dayjs(`${startDate} ${startTime}`).isAfter(dayjs()) ||
+    dayjs(`${endDate} ${endTime}`).isBefore(dayjs()) ||
     !isShowCountdown
   )
     return null;
 
   const { days, hours, minutes, seconds } = timeLeft;
 
+  const TimeUnit = ({ value, label }: { value: number; label: string }) => (
+    <div className="flex flex-col items-center px-3 py-2 rounded-lg bg-gradient-glow">
+      <span className="text-2xl font-bold text-primary">
+        {formatTime(value)}
+      </span>
+      <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
+        {label}
+      </span>
+    </div>
+  );
+
+  const Separator = () => (
+    <div className="text-2xl font-bold text-primary">:</div>
+  );
+
   switch (countdownFormat) {
     case "hh:mm:ss":
       const totalHours = days * 24 + hours;
       return (
-        <div className="tw:flex tw:flex-col tw:items-center">
-          <p className="tw:font-bold">Hurry! Offer ends in</p>
-          <div className="tw:flex">
-            <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl ">{formatTime(totalHours)}</p>
-              <p className="tw:text-xs">HRS</p>
+        <div className="flex flex-col items-center">
+          <p className="font-bold">Hurry! Offer ends in</p>
+          <div className="flex">
+            <div className="flex flex-col items-center">
+              <p className="text-2xl ">{formatTime(totalHours)}</p>
+              <p className="text-xs">HRS</p>
             </div>
-            <div className="tw:mx-2 tw:text-2xl">:</div>
-            <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl ">{formatTime(minutes)}</p>
-              <p className="tw:text-xs">MINS</p>
+            <div className="mx-2 text-2xl">:</div>
+            <div className="flex flex-col items-center">
+              <p className="text-2xl ">{formatTime(minutes)}</p>
+              <p className="text-xs">MINS</p>
             </div>
-            <div className="tw:mx-2 tw:text-2xl">:</div>
-            <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl ">{formatTime(seconds)}</p>
-              <p className="tw:text-xs">SECS</p>
+            <div className="mx-2 text-2xl">:</div>
+            <div className="flex flex-col items-center">
+              <p className="text-2xl ">{formatTime(seconds)}</p>
+              <p className="text-xs">SECS</p>
             </div>
           </div>
         </div>
@@ -101,63 +114,41 @@ export const Countdown: React.FC<Props> = ({
     case "hh:mm":
       const totalHoursOnly = days * 24 + hours;
       return (
-        <div className="tw:flex tw:flex-col tw:items-center">
-          <p className="tw:font-bold">Hurry! Offer ends in</p>
-          <div className="tw:flex">
-            <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl ">{formatTime(totalHoursOnly)}</p>
-              <p className="tw:text-xs">HRS</p>
-            </div>
-            <div className="tw:mx-2 tw:text-2xl">:</div>
-            <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl">{formatTime(minutes)}</p>
-              <p className="tw:text-xs">MINS</p>
-            </div>
+        <div className="flex flex-col items-center">
+          <p className="font-bold mb-1">Hurry! Offer ends in</p>
+          <div className="flex items-center gap-2">
+            <TimeUnit value={totalHoursOnly} label="HRS" />
+            <Separator />
+            <TimeUnit value={minutes} label="MINS" />
+            <Separator />
+            <TimeUnit value={seconds} label="SECS" />
           </div>
         </div>
       );
     case "mm:ss":
       const totalMinutes = days * 24 * 60 + hours * 60 + minutes;
       return (
-        <div className="tw:flex tw:flex-col tw:items-center">
-          <p className="tw:font-bold">Hurry! Offer ends in</p>
-          <div className="tw:flex">
-            <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl ">{formatTime(totalMinutes)}</p>
-              <p className="tw:text-xs">MINS</p>
-            </div>
-            <div className="tw:mx-2 tw:text-2xl">:</div>
-            <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl ">{formatTime(seconds)}</p>
-              <p className="tw:text-xs">SECS</p>
-            </div>
+        <div className="flex flex-col items-center">
+          <p className="font-bold mb-1">Hurry! Offer ends in</p>
+          <div className="flex items-center gap-2">
+            <TimeUnit value={totalMinutes} label="MINS" />
+            <Separator />
+            <TimeUnit value={seconds} label="SECS" />
           </div>
         </div>
       );
     default: // "dd:hh:mm:ss"
       return (
-        <div className="tw:flex tw:flex-col tw:items-center">
-          <p className="tw:font-bold">Hurry! Offer ends in</p>
-          <div className="tw:flex">
-            <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl ">{formatTime(days)}</p>
-              <p className="tw:text-xs">DAYS</p>
-            </div>
-            <div className="tw:mx-2 tw:text-2xl">:</div>
-            <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl ">{formatTime(hours)}</p>
-              <p className="tw:text-xs">HRS</p>
-            </div>
-            <div className="tw:mx-2 tw:text-2xl">:</div>
-            <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl ">{formatTime(minutes)}</p>
-              <p className="tw:text-xs">MINS</p>
-            </div>
-            <div className="tw:mx-2 tw:text-2xl">:</div>
-            <div className="tw:flex tw:flex-col tw:items-center">
-              <p className="tw:text-2xl ">{formatTime(seconds)}</p>
-              <p className="tw:text-xs">SECS</p>
-            </div>
+        <div className="flex flex-col items-center">
+          <p className="font-bold mb-1">Hurry! Offer ends in</p>
+          <div className="flex items-center gap-2">
+            <TimeUnit value={days} label="DAYS" />
+            <Separator />
+            <TimeUnit value={hours} label="HRS" />
+            <Separator />
+            <TimeUnit value={minutes} label="MINS" />
+            <Separator />
+            <TimeUnit value={seconds} label="SECS" />
           </div>
         </div>
       );
